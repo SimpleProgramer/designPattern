@@ -100,7 +100,7 @@ public class MultiplexerTimeServer implements Runnable,Stopable {
                     byte[] bytes = new byte[buffer.remaining()];
                     buffer.get(bytes);
                     String body = new String(bytes, "utf-8");
-                    System.out.println("this time server receive order : " + body);
+                    System.out.println(Thread.currentThread().getName() + " this time server receive order : " + body);
                     String currentTime = "QUERY TIME ORDER".equalsIgnoreCase(body) ? new Date().toString() : "BAD ORDER";
                     doWrite(sc,currentTime);
 

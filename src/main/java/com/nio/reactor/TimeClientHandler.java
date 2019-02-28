@@ -89,7 +89,7 @@ public class TimeClientHandler implements Runnable ,Stopable{
                     byte[] bytes = new byte[buffer.remaining()];
                     buffer.get(bytes);
                     String body = new String(bytes, "UTF-8");
-                    System.out.println("Now is :" + body);
+                    System.out.println(Thread.currentThread().getName() + " Now is :" + body);
                     stop();
                 } else if (readBytes < 0) {
                     //对端关闭

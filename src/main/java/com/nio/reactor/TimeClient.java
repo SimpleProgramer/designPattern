@@ -21,7 +21,9 @@ public class TimeClient {
             }
         }
 
-        new Thread(new TimeClientHandler("127.0.0.1",port),"TimeClientHandler-001").start();
+        for (int i = 0; i < 100; i++) {
+            new Thread(new TimeClientHandler("127.0.0.1",port),"TimeClientHandler-00" + i).start();
+        }
 
 
     }
