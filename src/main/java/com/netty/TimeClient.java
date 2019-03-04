@@ -9,6 +9,8 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 
+import java.util.Arrays;
+
 /**
  * @author wangzun
  * @version 2019/3/1 下午2:05
@@ -42,7 +44,6 @@ public class TimeClient {
 
     public static void main(String[] args) {
         int port = 8080;
-
         new TimeClient().connection(port,"127.0.0.1");
     }
 }

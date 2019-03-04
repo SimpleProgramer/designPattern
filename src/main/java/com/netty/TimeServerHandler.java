@@ -14,6 +14,9 @@ import java.util.Date;
  */
 public class TimeServerHandler extends ChannelHandlerAdapter {
 
+    //用于测试客户端多次发送消息粘包问题
+    private int counter;
+
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
@@ -22,7 +25,8 @@ public class TimeServerHandler extends ChannelHandlerAdapter {
         byteBuf.readBytes(req);
         String body = new String(req, "UTF-8");
         System.out.println("This Time Server Receive Order : " + body);
-        String currentTime = "QUERY TIME ORDER".equalsIgnoreCase(body) ? new Date(System.currentTimeMillis()).toString() : "BAD ORDER";
+        System.out.println("接收到了第 " + counter++ + "次请求");
+        String currentTime = ("QUERY TIME ORDER".equalsIgnoreCase(body) ? new Date(System.currentTimeMillis()).toString() : "BAD ORDER") + System.getProperty("line.separator");
         ByteBuf resp = Unpooled.copiedBuffer(currentTime.getBytes());
         ctx.write(resp);
     }
