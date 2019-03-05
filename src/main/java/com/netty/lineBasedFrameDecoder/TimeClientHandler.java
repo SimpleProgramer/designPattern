@@ -1,11 +1,9 @@
-package com.netty;
+package com.netty.lineBasedFrameDecoder;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerAdapter;
 import io.netty.channel.ChannelHandlerContext;
-import lombok.Data;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author wangzun
@@ -21,7 +19,7 @@ public class TimeClientHandler extends ChannelHandlerAdapter {
     private int counter;
 
     public TimeClientHandler() {
-        req = "QUERY TIME ORDER".getBytes();
+        req = ("QUERY TIME ORDER" + System.getProperty("line.separator")).getBytes();
         //发送单条信息是在这里初始化
     }
 
@@ -31,18 +29,17 @@ public class TimeClientHandler extends ChannelHandlerAdapter {
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
         //当TCP连接与服务端建立成功之后，响应该事件，通过ChannelHandlerContext 将firstMessage 刷入发送消息队列。在此之前。消息在发送缓冲队列。
         ByteBuf firstMessage = null;
+        for (int i = 0; i < 100; i++) {
             firstMessage = Unpooled.buffer(req.length);
             firstMessage.writeBytes(req);
             ctx.writeAndFlush(firstMessage);
+        }
     }
     //通道读写事件响应
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         //当服务器返回消息时，channelRead被调用
-        ByteBuf byteBuf = (ByteBuf) msg;
-        byte[] req = new byte[byteBuf.readableBytes()];
-        byteBuf.readBytes(req);
-        String body = new String(req, "UTF-8");
+        String body = (String) msg;
         System.out.println("Now is :" + body);
         System.out.println("这是第"+ ++counter +"次收到回复");
     }

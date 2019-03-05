@@ -1,4 +1,4 @@
-package com.netty;
+package com.netty.lineBasedFrameDecoder;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
@@ -41,6 +41,8 @@ public class TimeServer {
 
         @Override
         protected void initChannel(SocketChannel ch) throws Exception {
+            ch.pipeline().addLast(new LineBasedFrameDecoder(1024));
+            ch.pipeline().addLast(new StringDecoder());
             ch.pipeline().addLast(new TimeServerHandler());
         }
     }

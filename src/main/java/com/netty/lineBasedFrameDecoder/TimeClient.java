@@ -1,4 +1,4 @@
-package com.netty;
+package com.netty.lineBasedFrameDecoder;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
@@ -10,8 +10,6 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.LineBasedFrameDecoder;
 import io.netty.handler.codec.string.StringDecoder;
-
-import java.util.Arrays;
 
 /**
  * @author wangzun
@@ -31,7 +29,8 @@ public class TimeClient {
                 .handler(new ChannelInitializer<SocketChannel>() {
                     @Override
                     protected void initChannel(SocketChannel socketChannel) throws Exception {
-                        socketChannel.pipeline()
+                        socketChannel.pipeline().addLast(new LineBasedFrameDecoder(1024))
+                                .addLast(new StringDecoder())
                                 .addLast(new TimeClientHandler());
                     }
                 });

@@ -1,4 +1,4 @@
-package com.netty;
+package com.netty.lineBasedFrameDecoder;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -20,13 +20,10 @@ public class TimeServerHandler extends ChannelHandlerAdapter {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        ByteBuf byteBuf = (ByteBuf) msg;
-        byte[] req = new byte[byteBuf.readableBytes()];
-        byteBuf.readBytes(req);
-        String body = new String(req, "UTF-8");
+        String body = (String) msg;
         System.out.println("This Time Server Receive Order : " + body);
         System.out.println("接收到了第 " + ++counter + "次请求");
-        String currentTime = "QUERY TIME ORDER".equalsIgnoreCase(body) ? new Date(System.currentTimeMillis()).toString() : "BAD ORDER";
+        String currentTime = ("QUERY TIME ORDER".equalsIgnoreCase(body) ? new Date(System.currentTimeMillis()).toString() : "BAD ORDER") + System.getProperty("line.separator");
         ByteBuf resp = Unpooled.copiedBuffer(currentTime.getBytes());
         ctx.write(resp);
     }
