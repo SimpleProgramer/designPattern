@@ -48,7 +48,7 @@ public class SubReqClient {
 
     }
 
-    private class SubReqClientHandler extends ChannelHandlerAdapter {
+    private class SubReqClientHandsler extends ChannelHandlerAdapter {
         @Override
         public void channelActive(ChannelHandlerContext ctx) throws Exception {
             for (int i = 0;i < 10;i++){

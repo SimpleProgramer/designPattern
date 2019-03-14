@@ -37,7 +37,7 @@ public class SubReqServer {
                             sc.pipeline().addLast(new ProtobufDecoder(SubscribeReqProto.SubscribeReq.getDefaultInstance()));
                             sc.pipeline().addLast(new ProtobufVarint32LengthFieldPrepender());
                             sc.pipeline().addLast(new ProtobufEncoder());
-                            sc.pipeline().addLast(new SubReqServerHansdler());
+                            sc.pipeline().addLast(new SubReqServerHandler());
                         }
                     });
             ChannelFuture f = b.bind(port).sync();

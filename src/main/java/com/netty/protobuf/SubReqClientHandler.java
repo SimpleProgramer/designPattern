@@ -19,7 +19,7 @@ public class SubReqClientHandler extends ChannelHandlerAdapter {
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        for (int i = 1; i < 11; i++) {
+        for (int i = 0; i < 11; i++) {
             SubscribeReqProto.SubscribeReq subscribeReq = createSubscribeReq(i);
             System.out.println(subscribeReq);
             ctx.write(subscribeReq);
