@@ -18,15 +18,20 @@ public class SubReqServerHandler extends ChannelHandlerAdapter {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         SubscribeReqProto.SubscribeReq req = (SubscribeReqProto.SubscribeReq) msg;
-        System.out.println("service accept client subscribe req : [" + req.toString() + "]");
+        System.out.println("接受到来自:" + req.getUserName() + "订购：" + req.getProductName() + "的请求");
         ctx.writeAndFlush(resp(req.getSubReqId()));
     }
 
-    private SubscribeRespProto.SubscribeResp resp(int subReqID) {
+    @Override
+    public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
+        ctx.flush();
+    }
+
+    private SubscribeRespProto.SubscribeResp resp(int subReqId) {
         SubscribeRespProto.SubscribeResp.Builder builder = SubscribeRespProto.SubscribeResp.newBuilder();
-        builder.setSubReqId(subReqID);
+        builder.setSubReqId(subReqId);
+        builder.setDesc("DNF2019 subscribe succesed");
         builder.setRespCode(0);
-        builder.setDesc("netty book order succeed,3 days later sent to the designated address");
         return builder.build();
     }
 
