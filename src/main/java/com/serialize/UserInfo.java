@@ -1,6 +1,7 @@
 package com.serialize;
 
 import lombok.Data;
+import org.msgpack.annotation.Message;
 
 import java.io.Serializable;
 import java.nio.ByteBuffer;
@@ -11,6 +12,7 @@ import java.nio.ByteBuffer;
  * @desc
  */
 @Data
+@Message
 public class UserInfo implements Serializable {
 
     private static final long serialVersionUID = 7003025077461383509L;
