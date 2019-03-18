@@ -18,7 +18,7 @@ public class SubReqServerHandler extends ChannelHandlerAdapter {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         SubscribeReqProto.SubscribeReq req = (SubscribeReqProto.SubscribeReq) msg;
-        System.out.println("接受到来自:" + req.getUserName() + "订购：" + req.getProductName() + "的请求");
+        System.out.println("接受到来自:" + req.getUserName() + "在"+req.getAddressList().toString()+"订购：" + req.getProductName() + "的请求");
         ctx.writeAndFlush(resp(req.getSubReqId()));
     }
 

@@ -1,7 +1,6 @@
 package com.netty.protobuf;
 
 import com.serialize.protobuf.SubscribeReqProto;
-import com.serialize.protobuf.SubscribeRespProto;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -21,61 +20,38 @@ import io.netty.handler.logging.LoggingHandler;
  */
 public class SubReqServer {
 
-    private void bind(int port) throws InterruptedException {
+    public void bind(int port) {
         EventLoopGroup bossGroup = new NioEventLoopGroup();
-        EventLoopGroup workerGroup = new NioEventLoopGroup();
+        EventLoopGroup workGroup = new NioEventLoopGroup();
 
+        ServerBootstrap bootstrap = new ServerBootstrap();
         try {
-            ServerBootstrap b = new ServerBootstrap();
-            b.group(bossGroup, workerGroup).channel(NioServerSocketChannel.class)
-                    .option(ChannelOption.SO_BACKLOG, 100)
+            bootstrap.group(bossGroup, workGroup)
+                    .channel(NioServerSocketChannel.class)
+                    .option(ChannelOption.SO_BACKLOG, 1024)
                     .handler(new LoggingHandler(LogLevel.INFO))
                     .childHandler(new ChannelInitializer<SocketChannel>() {
                         @Override
-                        protected void initChannel(SocketChannel sc) throws Exception {
-                            sc.pipeline().addLast(new ProtobufVarint32FrameDecoder());
-                            sc.pipeline().addLast(new ProtobufDecoder(SubscribeReqProto.SubscribeReq.getDefaultInstance()));
-                            sc.pipeline().addLast(new ProtobufVarint32LengthFieldPrepender());
-                            sc.pipeline().addLast(new ProtobufEncoder());
-                            sc.pipeline().addLast(new SubReqServerHandler());
+                        protected void initChannel(SocketChannel channel) throws Exception {
+                            channel.pipeline().addLast(new ProtobufVarint32FrameDecoder());
+                            channel.pipeline().addLast(new ProtobufDecoder(SubscribeReqProto.SubscribeReq.getDefaultInstance()));
+                            channel.pipeline().addLast(new ProtobufVarint32LengthFieldPrepender());
+                            channel.pipeline().addLast(new ProtobufEncoder());
+                            channel.pipeline().addLast(new SubReqServerHandler());
                         }
                     });
-            ChannelFuture f = b.bind(port).sync();
-            f.channel().closeFuture().sync();
+            ChannelFuture sync = bootstrap.bind(port).sync();
+            sync.channel().closeFuture().sync();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            System.exit(1);
         }finally {
             bossGroup.shutdownGracefully();
-            workerGroup.shutdownGracefully();
+            workGroup.shutdownGracefully();
         }
     }
 
-    private class SubReqServerHansdler extends ChannelHandlerAdapter {
-        @Override
-        public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-            SubscribeReqProto.SubscribeReq req = (SubscribeReqProto.SubscribeReq) msg;
-            System.out.println("service accept client subscribe req : [" + req.toString() + "]");
-            ctx.writeAndFlush(resp(req.getSubReqId()));
-        }
-
-        @Override
-        public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
-            ctx.flush();
-        }
-
-        private SubscribeRespProto.SubscribeResp resp(int subReqID) {
-            SubscribeRespProto.SubscribeResp.Builder builder = SubscribeRespProto.SubscribeResp.newBuilder();
-            builder.setSubReqId(subReqID);
-            builder.setRespCode(0);
-            builder.setDesc("netty book order succeed,3 days later sent to the designated address");
-            return builder.build();
-        }
-
-        @Override
-        public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-            ctx.close();
-        }
-    }
-
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) {
         new SubReqServer().bind(8080);
     }
 

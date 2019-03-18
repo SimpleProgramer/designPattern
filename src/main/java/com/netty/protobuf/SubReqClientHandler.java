@@ -19,7 +19,7 @@ public class SubReqClientHandler extends ChannelHandlerAdapter {
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        for (int i = 0; i < 11; i++) {
+        for (int i = 1; i < 11; i++) {
             SubscribeReqProto.SubscribeReq subscribeReq = createSubscribeReq(i);
             System.out.println(subscribeReq);
             ctx.write(subscribeReq);
@@ -45,12 +45,12 @@ public class SubReqClientHandler extends ChannelHandlerAdapter {
 
     private SubscribeReqProto.SubscribeReq createSubscribeReq(int i) {
         SubscribeReqProto.SubscribeReq.Builder builder = SubscribeReqProto.SubscribeReq.newBuilder();
-        List<String> add = new ArrayList<>();
-        add.add("阿拉德");
-        builder.addAllAddress(add);
-        builder.setProductName("di" + i +"taochunjietao");
+        List<String> adds = new ArrayList<>();
+        adds.add("阿拉德大陆");
+        builder.addAllAddress(adds);
+        builder.setProductName("第" + i +"套2019春节套");
         builder.setSubReqId(1);
-        builder.setUserName("qianhuanhuan");
+        builder.setUserName("浅欢欢");
         return builder.build();
     }
 }
